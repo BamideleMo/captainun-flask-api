@@ -10,6 +10,10 @@ from flask_cors import CORS
 auth = Blueprint("auth",__name__,url_prefix="/api/v1/auth")
 CORS(auth)
 
+@auth.get('/')
+def welcome():
+    return {"Hello":"World"}
+
 @auth.post('/register')
 def register():
     fullname=request.json['fullname']
