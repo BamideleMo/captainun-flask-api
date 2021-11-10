@@ -105,3 +105,22 @@ def user():
          }
     }), HTTP_200_OK
 
+@auth.get('/all_unverified_users')
+@jwt_required()
+def get_unverified_users():
+    unverified_users = Users.query.filter_by(status='unverified').order_by(Users.id.asc()).limit(10)
+    
+    data=[]
+
+    for one_unverified_user in unverified_users:
+        data.append({
+            'id': one_unverified_user.id,
+            'fullname': one_unverified_user.fullname,
+            'email': one_unverified_user.email,
+            'group': one_unverified_user.group,
+            'date': one_unverified_user.created_at,
+        })
+     
+    return jsonify({
+        "unverified_users": data,
+    }), HTTP_200_OK
