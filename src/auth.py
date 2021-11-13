@@ -105,7 +105,7 @@ def user():
          }
     }), HTTP_200_OK
 
-@auth.get('/all_unverified_users')
+@auth.get('/all-unverified-users')
 @jwt_required()
 def get_unverified_users():
     unverified_users = Users.query.filter_by(status='unverified').order_by(Users.id.asc()).limit(10)
