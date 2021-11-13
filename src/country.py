@@ -32,7 +32,7 @@ def post_cap():
 
 @country.get('/all-caps')
 @jwt_required()
-def get_all_country_caps():
+def get_all_caps():
     
     page=request.args.get('page',1,type=int)
     per_page = request.args.get('per_page',1,type=int)
@@ -66,3 +66,64 @@ def get_all_country_caps():
         "country_caps": data, 
         "meta":meta
     }), HTTP_200_OK
+
+
+@country.get('/a-country-caps')
+@jwt_required()
+def get_country_caps():
+    page=request.args.get('page',1,type=int)
+    per_page = request.args.get('per_page',1,type=int)
+    country = request.args.get('country')
+    
+    a_country_caps = Country.query.filter(Country.country_name == country).order_by(Country.id.desc()).paginate(page=page,per_page=per_page)
+    
+    data=[]
+
+    for a_cap in a_country_caps.items:
+        data.append({
+            'id': a_cap.id,
+            'img': a_cap.img,
+            'country_name': a_cap.country_name,
+            'climate_goal': a_cap.climate_goal,
+            'posted_by': a_cap.posted_by,
+            'created_at': a_cap.created_at,
+            'updated_at': a_cap.updated_at,
+        })
+    
+    meta={
+        "page": a_country_caps.page,
+        "pages": a_country_caps.page,
+        "total_count": a_country_caps.total,
+        "prev_page": a_country_caps.prev_num,
+        "next_page": a_country_caps.next_num,
+        "has_next": a_country_caps.has_next,
+        "has_prev": a_country_caps.has_prev,
+    }
+     
+    return jsonify({
+        "a_country_caps": data, 
+        "meta":meta
+    }), HTTP_200_OK
+
+
+@country.get('/<string:id>')
+@jwt_required()
+def get_cap(id):
+
+    one_cap = Country.query.filter_by(id=id).first()
+
+    if not one_cap:
+        return jsonify({
+            "message": 'Record not found'
+        }), HTTP_404_NOT_FOUND
+
+    return jsonify({
+        'id': one_cap.id,
+        'img': one_cap.category,
+        'country_name': one_cap.country_name,
+        'climate_goal': one_cap.climate_goal,
+        'posted_by': one_cap.posted_by,
+        'created_at': one_cap.created_at,
+        'updated_at': one_cap.updated_at,
+    }), HTTP_200_OK
+
