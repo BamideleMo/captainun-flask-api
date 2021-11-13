@@ -1,13 +1,14 @@
 from flask import Flask
 import os
 from src.auth import auth
+from src.country import country
 from src.database import db
 from flask_jwt_extended import JWTManager
 
 from flask_cors import CORS
 
 def create_app(test_config=None):
-    app = Flask(__name__,instance_relative_config=True)
+    app = Flask(__name__,instance_relative_config=True,static_folder='src/static')
     CORS(app)
     app.debug = True
 
@@ -36,5 +37,6 @@ def create_app(test_config=None):
     JWTManager(app)
     
     app.register_blueprint(auth)
+    app.register_blueprint(country)
     
     return app
